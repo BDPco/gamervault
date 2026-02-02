@@ -44,6 +44,32 @@
         .hidden { display: none; }
          
         footer { padding: 40px 20px; text-align: center; border-top: 1px solid #222; color: #555; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+		
+		
+	/* Button Styles */
+.btn-container { display: flex; gap: 10px; margin-top: 15px; }
+
+.btn-purchase {
+    background-color: #28a745; /* Green */
+    color: white; border: none; padding: 10px 20px;
+    cursor: pointer; font-weight: bold; border-radius: 5px;
+}
+
+.btn-add-cart {
+    background-color: #ffc107; /* Yellow */
+    color: black; border: none; padding: 10px 20px;
+    cursor: pointer; font-weight: bold; border-radius: 5px;
+}
+
+.cart-btn {
+    font-size: 24px; cursor: pointer; position: relative;
+}
+
+#cart-count {
+    background: #FF8C00; color: white; font-size: 12px;
+    padding: 2px 6px; border-radius: 50%;
+    position: absolute; top: -5px; right: -10px;
+}
     </style>
 </head>
 <body>
@@ -59,10 +85,7 @@
 <div class="sidebar" id="sidebar">
     <a onclick="showSection('market')">🛒 MARKETPLACE</a>
     <a id="nav-sell" class="hidden" onclick="showSection('sell')">💰 LIST AN ACCOUNT</a>
-    <a id="nav-settings" class="hidden" onclick="showSection('settings')">⚙️ SETTINGS</a>
-    <a id="nav-cart" onclick="showSection('cart')">🛍️ MY CART (<span id="cart-count">0</span>)</a>
-    <a id="nav-auth" onclick="showSection('auth')">🔑 LOGIN / SIGNUP</a>
-    <a id="nav-logout" class="hidden" onclick="logout()">🚪 LOGOUT</a>
+    <a id="nav-cart" onclick="showSection('cart')">🛍️ MY CART (<span id="cart-count">0</span>)</
 </div>
 
 <div id="market-section">
@@ -83,25 +106,9 @@
         </div>
     </div>
 </div>
-
-<div id="settings-section" class="container hidden">
-    <div class="section-header">Account Settings</div>
-    <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
-        <h3 id="set-email">Email: loading...</h3>
-        <p>Status: <span id="set-role" style="color: var(--gold); font-weight: bold;">Seller</span></p>
-        <div id="pro-feature-box">
-            <h4 style="color: var(--gold);">PRO FEATURE: VERIFIED SELLER</h4>
-            <p>Get a blue checkmark for trust. Price: $15.00 USD</p>
-            <div id="paypal-pro-container"></div>
         </div>
     </div>
 </div>
-
-<div id="auth-section" class="container hidden">
-    <div class="section-header">Join the Vault</div>
-    <div style="max-width: 500px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f; text-align: center;">
-        <input type="email" id="authEmail" placeholder="Enter your email address">
-<button class="btn" onclick="sendAuthLink()">SEND SIGN-IN LINK</button>
     </div>
 </div>
 
@@ -210,7 +217,59 @@ function logout() {
         }).render('#paypal-button-container');
     }
     renderSpotlight();
+// 1. KEEP THIS: YOUR CONFIG (This is the brain of the site)
+const firebaseConfig = { 
+    apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
+    databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com", 
+    authDomain: "gamervault-ae418.firebaseapp.com" 
+};
+firebase.initializeApp(firebaseConfig);
 
+// 2. KEEP THIS: SIDEBAR LOGIC (So your menu works)
+function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+function showSection(s) {
+    document.querySelectorAll('.container, #market-section').forEach(el => el.classList.add('hidden'));
+    const target = document.getElementById(s + '-section');
+    if(target) target.classList.remove('hidden');
+    if(document.getElementById('sidebar').classList.contains('active')) toggleMenu();
+}
+
+// 3. THE NEW ACCOUNT LIST (This is how you list accounts now)
+const accountData = [
+  {
+    id: 1,
+    title: "OG Renegade Raider",
+    price: 150.00,
+    img: "images/renegade.jpg", // Make sure this folder/file exists on GitHub
+    desc: "Full Access, Linkable to all consoles, OG Email included."
+  },
+  {
+    id: 2,
+    title: "Black Knight + Mako",
+    price: 85.00,
+    img: "images/blackknight.jpg",
+    desc: "S2 Max, Rare Mako Glider, 120 Skins."
+  }
+];
+
+// 4. THE NO-LOGIN CART (Remembers people via their browser)
+let cart = JSON.parse(localStorage.getItem('gv_cart')) || [];
+
+function addToCart(id) {
+    const item = accountData.find(acc => acc.id === id);
+    cart.push(item);
+    localStorage.setItem('gv_cart', JSON.stringify(cart));
+    updateCartUI();
+    alert(item.title + " added to cart!");
+}
+
+function updateCartUI() {
+    const cartCount = document.getElementById('cart-count');
+    if(cartCount) cartCount.innerText = cart.length;
+}
+
+// Run this when page loads
+updateCartUI();
     function renderProPayment(uid) {
         document.getElementById('paypal-pro-container').innerHTML = "";
         paypal.Buttons({
