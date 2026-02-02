@@ -10,66 +10,59 @@
         :root { --gold: #fed100; --dark: #0d0f1a; --card-bg: #161925; --text-gray: #a0a0a0; }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
         
-        /* HEADER & GREEN STATUS (Restored from IMG_3143) */
-        header { background: var(--gold); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #000; }
+        /* UPDATED HEADER SECTION */
+        header { background: var(--gold); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; height: 50px; }
         .logo { color: #000; font-weight: 900; font-size: 18px; letter-spacing: -1px; }
-        .status-container { display: flex; align-items: center; gap: 8px; }
-        .live-tag { color: #00ff00; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-btn { cursor: pointer; color: #000; font-size: 28px; padding: 5px; }
 
-        .menu-btn { cursor: pointer; color: #000; font-size: 24px; font-weight: bold; }
+        /* NEW GREEN STATUS BAR FOR MOBILE VISIBILITY */
+        .status-bar { background: #000; color: #00ff00; padding: 6px; text-align: center; font-size: 10px; font-weight: 900; letter-spacing: 1px; width: 100%; border-bottom: 1px solid #1a1e2e; }
 
-        /* CENTERED HERO SECTION */
-        .hero { padding: 40px 20px; text-align: center; }
-        .hero h1 { font-size: 32px; margin: 0; font-weight: 900; }
+        .hero { padding: 40px 20px; text-align: center; background: radial-gradient(circle at center, #1a1e2e 0%, var(--dark) 100%); }
+        .hero h1 { font-size: 32px; margin: 0; font-weight: 900; line-height: 1; }
         .hero h2 { font-size: 28px; margin: 0; color: var(--gold); font-weight: 900; }
+        .hero p { color: var(--text-gray); max-width: 600px; margin: 15px auto; font-size: 14px; line-height: 1.5; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .section-header { text-align: center; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: 900; margin-bottom: 25px; font-size: 14px; }
         
-        /* THE MARKETPLACE GRID */
-        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 20px; }
-        @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }
+        .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 768px) { .grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); } }
         
-        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #2a2e3f; text-align: left; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #2a2e3f; cursor: pointer; }
         .card-img { width: 100%; height: 180px; background-size: cover; background-position: center; }
         .card-body { padding: 15px; }
+        .card-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
         .card-price { font-size: 22px; font-weight: 900; color: var(--gold); }
 
-        /* FIXED CENTERED PROMO BOX (Fixes image_fa065a) */
-        .spotlight { 
-            background: #000; 
-            border: 2px solid var(--gold); 
-            border-radius: 15px; 
-            padding: 30px 15px; 
-            margin: 40px auto; 
-            max-width: 400px; /* Keeps it narrow enough for iPhone */
-            text-align: center; 
-            box-sizing: border-box;
-        }
-        .spotlight-price { font-size: 48px; font-weight: 900; margin: 10px 0; display: block; color: white; }
-        
-        /* SIDEBAR */
+        .spotlight { background: #000; border: 2px solid var(--gold); border-radius: 15px; padding: 30px 15px; margin: 40px auto; text-align: center; max-width: 400px; }
+        .spotlight-price { font-size: 48px; font-weight: 900; margin: 10px 0; display: block; }
+        .spotlight-list { list-style: none; padding: 0; margin: 15px auto; max-width: 250px; text-align: left; font-size: 13px; }
+
         .sidebar { position: fixed; right: -100%; top: 0; width: 80%; height: 100%; background: #000; z-index: 2000; transition: 0.3s; padding-top: 60px; border-left: 2px solid var(--gold); }
         .sidebar.active { right: 0; }
-        .sidebar a { display: block; padding: 18px 25px; color: white; text-decoration: none; font-weight: 700; border-bottom: 1px solid #111; }
+        .sidebar a { display: block; padding: 18px 25px; color: white; text-decoration: none; font-weight: 700; border-bottom: 1px solid #111; cursor: pointer; }
 
-        /* MODAL */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 3000; display: none; overflow-y: auto; }
         .modal-box { width: 90%; margin: 30px auto; background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
         
-        .btn { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 14px; margin-top: 10px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #0a0c14; border: 1px solid #2a2e3f; color: white; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: #000; padding: 15px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 14px; }
         .hidden { display: none; }
-        footer { padding: 30px; text-align: center; color: #444; font-size: 10px; letter-spacing: 1px; }
+        footer { padding: 30px 15px; text-align: center; color: #444; font-size: 10px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">GAMERVAULT</div>
-    <div class="status-container">
-        <span class="live-tag">● LIVE AUTOMATION ACTIVE</span>
+<div style="position: sticky; top: 0; z-index: 1000;">
+    <header>
+        <div class="logo">GAMERVAULT</div>
         <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    </header>
+    <div class="status-bar">
+        ● LIVE AUTOMATION ACTIVE
     </div>
-</header>
+</div>
 
 <div class="sidebar" id="sidebar">
     <a onclick="showSection('market')">🛒 MARKETPLACE</a>
@@ -80,113 +73,43 @@
     <div class="hero">
         <h1>Trade Accounts.</h1>
         <h2>Zero Risk.</h2>
-        <p style="color:var(--text-gray); font-size:14px;">The Caribbean's most trusted marketplace for Steam and GTA accounts.</p>
+        <p>The Caribbean's most trusted marketplace for Steam and GTA accounts.</p>
     </div>
 
     <div class="container">
-        <h2 style="color:var(--gold); font-size:14px; letter-spacing:2px;">VIP FEATURED LISTINGS</h2>
+        <div class="section-header">VIP Featured Listings</div>
         <div class="grid" id="listing-grid"></div>
 
         <div class="spotlight">
-            <div style="color:var(--gold); font-weight:900; font-size:18px;">Seller Spotlight</div>
+            <div style="color:var(--gold); font-weight:900; font-size:20px;">Seller Spotlight</div>
             <span class="spotlight-price">$10.20</span>
-            <div style="text-align:left; max-width:240px; margin: 0 auto 20px auto; font-size:13px; color:var(--text-gray);">
-                <div>🚀 7 Days Featured Placement</div>
-                <div>💎 Gold Highlighted Border</div>
-                <div>📢 Erogram Promotion</div>
-            </div>
+            <ul class="spotlight-list">
+                <li>🚀 7 Days Featured Placement</li>
+                <li>💎 Gold Highlighted Border</li>
+                <li>📢 Erogram Promotion</li>
+            </ul>
             <div id="paypal-button-container"></div>
         </div>
     </div>
 </div>
 
 <div class="container hidden" id="sell-section">
-    <h2 style="color:var(--gold);">Post Your Ad</h2>
-    <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; text-align: left;">
-        <input type="text" id="accTitle" placeholder="Account Name" style="width:100%; padding:12px; margin:8px 0; background:#000; color:white; border:1px solid #333; border-radius:8px;">
-        <input type="text" id="accPrice" placeholder="Price (USD)" style="width:100%; padding:12px; margin:8px 0; background:#000; color:white; border:1px solid #333; border-radius:8px;">
-        <input type="text" id="accImg" placeholder="Image URL (Imgur)" style="width:100%; padding:12px; margin:8px 0; background:#000; color:white; border:1px solid #333; border-radius:8px;">
-        <textarea id="accDesc" rows="4" placeholder="Description" style="width:100%; padding:12px; margin:8px 0; background:#000; color:white; border:1px solid #333; border-radius:8px;"></textarea>
-        <input type="text" id="accLink" placeholder="Telegram Link" style="width:100%; padding:12px; margin:8px 0; background:#000; color:white; border:1px solid #333; border-radius:8px;">
+    <div class="section-header">Seller Onboarding</div>
+    <div style="background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid #2a2e3f;">
+        <input type="text" id="accTitle" placeholder="Account Name">
+        <input type="text" id="accPrice" placeholder="Price (USD)">
+        <input type="text" id="accImg" placeholder="Image URL (Imgur)">
+        <textarea id="accDesc" rows="4" placeholder="Description"></textarea>
+        <input type="text" id="accLink" placeholder="Telegram Link">
         <button class="btn" onclick="postToFirebase()">POST LISTING</button>
     </div>
 </div>
 
 <div id="modal" class="modal">
     <div class="modal-box">
-        <span onclick="closeModal()" style="float:right; font-size:30px; color:#555;">&times;</span>
+        <span onclick="closeModal()" style="float:right; font-size:30px; color:#555; cursor:pointer;">&times;</span>
         <div id="modal-body"></div>
     </div>
 </div>
 
 <footer>GAMERVAULT ESCROW SERVICES © 2026</footer>
-
-<script src="https://www.paypal.com/sdk/js?client-id=AewX9Z7LNB6DZTa8jcMeDa5SEGB_nq2f2A_tdpZesgEUROomDxIp-e-Bs2GXruNPs_aCRV1SY291Lvqa&currency=USD"></script>
-<script>
-    const firebaseConfig = { 
-        apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
-        databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com" 
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-    function showSection(s) {
-        document.getElementById('market-section').classList.add('hidden');
-        document.getElementById('sell-section').classList.add('hidden');
-        document.getElementById(s + '-section').classList.remove('hidden');
-        if(document.getElementById('sidebar').classList.contains('active')) toggleMenu();
-    }
-
-    function postToFirebase() {
-        const title = document.getElementById('accTitle').value;
-        const price = document.getElementById('accPrice').value;
-        const img = document.getElementById('accImg').value;
-        const desc = document.getElementById('accDesc').value;
-        const link = document.getElementById('accLink').value;
-        if(title && price && img) {
-            db.ref('listings').push({ title, price: "$"+price, img, desc, link });
-            alert("Live!");
-            showSection('market');
-        }
-    }
-
-    db.ref('listings').on('value', (s) => {
-        const grid = document.getElementById('listing-grid');
-        grid.innerHTML = "";
-        s.forEach(c => {
-            const i = c.val();
-            grid.innerHTML += `
-                <div class="card" onclick="openItem('${c.key}')">
-                    <div class="card-img" style="background-image:url('${i.img}')"></div>
-                    <div class="card-body">
-                        <div style="font-weight:700;">${i.title}</div>
-                        <div class="card-price">${i.price}</div>
-                    </div>
-                </div>`;
-        });
-    });
-
-    function openItem(id) {
-        db.ref('listings/' + id).once('value', (s) => {
-            const i = s.val();
-            document.getElementById('modal-body').innerHTML = `
-                <img src="${i.img}" style="width:100%; border-radius:10px;">
-                <h2 style="margin:15px 0 5px 0;">${i.title}</h2>
-                <div class="card-price" style="margin-bottom:15px;">${i.price}</div>
-                <p style="color:#888; font-size:14px;">${i.desc}</p>
-                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center;">CONTACT SELLER</a>
-            `;
-            document.getElementById('modal').style.display = "block";
-        });
-    }
-
-    function closeModal() { document.getElementById('modal').style.display = "none"; }
-
-    paypal.Buttons({
-        createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Paid!"); }); }
-    }).render('#paypal-button-container');
-</script>
-</body>
-</html>
