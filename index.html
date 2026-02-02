@@ -6,17 +6,18 @@
     <title>GamerVault | Caribbean's #1 Marketplace</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
         :root { --gold: #fed100; --dark: #0d0f1a; --card-bg: #161925; --text-gray: #a0a0a0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
         
-        /* THE ICONIC HEADER (From IMG_3143) */
+        /* THE ICONIC HEADER */
         header { background: var(--gold); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #000; }
         .logo { color: #000; font-weight: 900; font-size: 24px; letter-spacing: -1px; }
         .ticker { font-size: 11px; font-weight: bold; color: #000; text-transform: uppercase; }
         .menu-btn { cursor: pointer; color: #000; font-size: 28px; line-height: 1; }
 
-        /* HERO SECTION (From image_fae473) */
+        /* HERO SECTION */
         .hero { padding: 80px 20px; text-align: center; background: radial-gradient(circle at center, #1a1e2e 0%, var(--dark) 100%); }
         .hero h1 { font-size: 48px; margin: 0; font-weight: 900; }
         .hero h2 { font-size: 42px; margin: 0; color: var(--gold); font-weight: 900; }
@@ -33,13 +34,10 @@
         .card-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-price { font-size: 26px; font-weight: 900; color: var(--gold); }
 
-        /* SELLER SPOTLIGHT (From image_fae414) */
-        .spotlight { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 50px 20px; margin: 60px 0; text-align: center; position: relative; overflow: hidden; }
-        .spotlight::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(254, 209, 0, 0.05) 0%, transparent 70%); pointer-events: none; }
-        .spotlight-title { font-size: 32px; font-weight: 900; color: var(--gold); margin-bottom: 10px; }
-        .spotlight-price { font-size: 64px; font-weight: 900; margin: 20px 0; display: block; }
-        .spotlight-list { list-style: none; padding: 0; margin: 20px auto; max-width: 300px; text-align: left; }
-        .spotlight-list li { margin-bottom: 12px; font-weight: 600; font-size: 15px; }
+        /* ROLE SELECTOR STYLES */
+        .role-selector { display: flex; gap: 10px; margin: 20px 0; }
+        .role-btn { flex: 1; padding: 15px; border: 1px solid #2a2e3f; background: #0a0c14; color: white; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
+        .role-btn.active { border-color: var(--gold); color: var(--gold); }
 
         /* SIDEBAR & MODALS */
         .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; z-index: 2000; transition: 0.3s; padding-top: 80px; border-left: 2px solid var(--gold); }
@@ -51,10 +49,10 @@
         .modal-box { max-width: 550px; margin: 50px auto; background: var(--card-bg); padding: 35px; border-radius: 20px; border: 1px solid var(--gold); position: relative; }
         
         input, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #0a0c14; border: 1px solid #2a2e3f; color: white; border-radius: 10px; box-sizing: border-box; font-size: 15px; }
-        input:focus { border-color: var(--gold); outline: none; }
         .btn { background: var(--gold); color: #000; padding: 18px; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 16px; transition: 0.2s; }
         .btn:hover { background: #fff; transform: scale(1.02); }
         .hidden { display: none; }
+        .verified-check { color: #1da1f2; margin-left: 5px; font-size: 16px; }
         
         footer { padding: 40px 20px; text-align: center; border-top: 1px solid #222; color: #555; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     </style>
@@ -69,8 +67,47 @@
 
 <div class="sidebar" id="sidebar">
     <a onclick="showSection('market')">🛒 MARKETPLACE</a>
-    <a onclick="showSection('sell')">💰 LIST AN ACCOUNT</a>
-    <a href="https://t.me/pccrumbi" target="_blank">📞 TG CUSTOMER SUPPORT</a>
+    <a id="nav-sell" class="hidden" onclick="showSection('sell')">💰 LIST AN ACCOUNT</a>
+    <a id="nav-settings" class="hidden" onclick="showSection('settings')">⚙️ SETTINGS</a>
+    <a id="nav-cart" onclick="showSection('cart')">🛍️ MY CART (<span id="cart-count">0</span>)</a>
+    <a id="nav-auth" onclick="showSection('auth')">🔑 LOGIN / SIGNUP</a>
+    <a id="nav-logout" class="hidden" onclick="logout()">🚪 LOGOUT</a>
+</div>
+
+<div id="auth-section" class="container hidden">
+    <div class="section-header">Join the Vault</div>
+    <div style="max-width: 500px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f; text-align: center;">
+        <p>Choose your path to get started:</p>
+        <div class="role-selector">
+            <div id="role-buyer" class="role-btn active" onclick="setRole('buyer')">I AM A BUYER</div>
+            <div id="role-seller" class="role-btn" onclick="setRole('seller')">I AM A SELLER</div>
+        </div>
+        <input type="email" id="authEmail" placeholder="Enter your email address">
+        <button class="btn" onclick="sendAuthLink()">SEND SECURE SIGN-IN LINK</button>
+        <p style="font-size: 12px; color: var(--text-gray); margin-top: 20px;">No password needed. We'll email you a login link.</p>
+    </div>
+</div>
+
+<div id="settings-section" class="container hidden">
+    <div class="section-header">Account Settings</div>
+    <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
+        <h3 id="set-email">Email: loading...</h3>
+        <p>Status: <span id="set-role" style="color: var(--gold); font-weight: bold;">Seller</span></p>
+        <hr style="border: 0; border-top: 1px solid #222; margin: 20px 0;">
+        
+        <div id="pro-feature-box">
+            <h4 style="color: var(--gold);">PRO FEATURE: VERIFIED SELLER</h4>
+            <p style="font-size: 14px; color: var(--text-gray);">Get a blue checkmark on all your listings to build maximum trust.</p>
+            <p style="font-weight: bold; font-size: 18px;">Price: $15.00 USD</p>
+            <div id="paypal-pro-container" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="cart-section" class="container hidden">
+    <div class="section-header">My Shopping Cart</div>
+    <div id="cart-items" class="grid"></div>
+    <div id="cart-empty" style="text-align: center; color: #444; padding: 50px;">Your cart is empty.</div>
 </div>
 
 <div id="market-section">
@@ -80,33 +117,19 @@
         <p>One of the newest most secure marketplace for Steam, GTA, Epic Games accounts etc. Powered by BDP Verified Escrow.</p>
         <div style="color: #00ff00; font-size: 11px; font-weight: bold; margin-top: 10px;">● LIVE AUTOMATION ACTIVE</div>
     </div>
-
     <div class="container">
         <div class="section-header">VIP Featured Listings</div>
-        <div class="grid" id="listing-grid">
-            </div>
-
-        <div class="spotlight">
-            <div class="spotlight-title">Seller Spotlight</div>
-            <p style="color: var(--text-gray);">Want your account seen by thousands? Promote your listing to the top of the vault.</p>
-            <span class="spotlight-price">$10.20</span>
-            <ul class="spotlight-list">
-                <li>🚀 7 Days Featured Placement</li>
-                <li>💎 Gold Highlighted Border</li>
-                <li>📢 Automated Erogram Promotion</li>
-            </ul>
-            <div id="paypal-button-container" style="max-width:350px; margin: 30px auto;"></div>
-        </div>
+        <div class="grid" id="listing-grid"></div>
     </div>
 </div>
 
 <div class="container hidden" id="sell-section">
     <div class="section-header">Seller Authorization</div>
     <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
-        <input type="text" id="accTitle" placeholder="Account Name (e.g. GTA Modded Level 500)">
+        <input type="text" id="accTitle" placeholder="Account Name">
         <input type="text" id="accPrice" placeholder="Price (USD)">
         <input type="text" id="accImg" placeholder="Image URL (Imgur link)">
-        <textarea id="accDesc" rows="5" placeholder="Full Account Details (Skins, Rank, Games)"></textarea>
+        <textarea id="accDesc" rows="5" placeholder="Full Account Details"></textarea>
         <input type="text" id="accLink" placeholder="Your Telegram Contact Link">
         <button class="btn" onclick="postToFirebase()">SUBMIT TO MARKETPLACE</button>
     </div>
@@ -116,11 +139,9 @@
     <div class="modal-box">
         <span onclick="closeModal()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:35px; color:#555;">&times;</span>
         <div id="modal-body"></div>
+        <button id="add-to-cart-btn" class="btn" style="margin-top: 10px; background: #fff;">ADD TO CART</button>
         <div style="margin-top:25px; padding-top:20px; border-top:1px solid #222;">
-            <div class="section-header" style="font-size:12px; text-align:left; margin-bottom:15px;">Trust & Reviews</div>
             <div id="reviews" style="max-height:150px; overflow-y:auto; margin-bottom:20px;"></div>
-            <input type="text" id="revInput" placeholder="Write a review...">
-            <button class="btn" style="padding:10px; font-size:12px;" onclick="addReview()">POST FEEDBACK</button>
         </div>
     </div>
 </div>
@@ -134,45 +155,105 @@
 <script>
     const firebaseConfig = { 
         apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
-        databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com" 
+        databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com",
+        authDomain: "gamervault-ae418.firebaseapp.com"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    const auth = firebase.auth();
+    
     let currentId = "";
+    let selectedRole = "buyer";
+    let myCart = JSON.parse(localStorage.getItem('gv_cart')) || [];
 
+    // UI LOGIC
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
     function showSection(s) {
-        document.getElementById('market-section').classList.add('hidden');
-        document.getElementById('sell-section').classList.add('hidden');
+        document.querySelectorAll('.container, #market-section').forEach(el => el.classList.add('hidden'));
         document.getElementById(s + '-section').classList.remove('hidden');
+        if(s === 'cart') renderCart();
         if(document.getElementById('sidebar').classList.contains('active')) toggleMenu();
         window.scrollTo(0,0);
     }
 
+    // AUTH LOGIC
+    function setRole(role) {
+        selectedRole = role;
+        document.getElementById('role-buyer').classList.toggle('active', role === 'buyer');
+        document.getElementById('role-seller').classList.toggle('active', role === 'seller');
+    }
+
+    async function sendAuthLink() {
+        const email = document.getElementById('authEmail').value;
+        const actionCodeSettings = { url: window.location.href, handleCodeInApp: true };
+        try {
+            await auth.sendSignInLinkToEmail(email, actionCodeSettings);
+            window.localStorage.setItem('emailForSignIn', email);
+            window.localStorage.setItem('tempRole', selectedRole);
+            alert("Secure link sent to " + email);
+        } catch (e) { alert(e.message); }
+    }
+
+    // HANDLE INCOMING LINK
+    if (auth.isSignInWithEmailLink(window.location.href)) {
+        let email = window.localStorage.getItem('emailForSignIn') || window.prompt('Confirm your email:');
+        auth.signInWithEmailLink(email, window.location.href).then(async (res) => {
+            if (res.additionalUserInfo.isNewUser) {
+                const role = window.localStorage.getItem('tempRole') || 'buyer';
+                await db.ref('users/' + res.user.uid).set({ email, role, verified: false });
+            }
+            window.localStorage.removeItem('emailForSignIn');
+            window.location.href = window.location.pathname;
+        });
+    }
+
+    // AUTH OBSERVER
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById('nav-auth').classList.add('hidden');
+            document.getElementById('nav-logout').classList.remove('hidden');
+            db.ref('users/' + user.uid).once('value', s => {
+                const data = s.val();
+                if (data.role === 'seller') {
+                    document.getElementById('nav-sell').classList.remove('hidden');
+                    document.getElementById('nav-settings').classList.remove('hidden');
+                    setupProPayment(user.uid);
+                }
+                document.getElementById('set-email').innerText = "Email: " + user.email;
+                document.getElementById('set-role').innerText = data.role.toUpperCase();
+            });
+        }
+    });
+
+    function logout() { auth.signOut(); location.reload(); }
+
+    // MARKET LOGIC
     function postToFirebase() {
         const title = document.getElementById('accTitle').value;
         const price = document.getElementById('accPrice').value;
         const img = document.getElementById('accImg').value;
         const desc = document.getElementById('accDesc').value;
         const link = document.getElementById('accLink').value;
-        if(title && price && img && link) {
-            db.ref('listings').push({ title, price: "$"+price, img, desc, link });
-            alert("AI SCAN COMPLETE: Account is now live.");
+        const user = auth.currentUser;
+
+        db.ref('users/' + user.uid).once('value', s => {
+            const isVerified = s.val().verified || false;
+            db.ref('listings').push({ title, price: "$"+price, img, desc, link, seller: user.uid, verifiedSeller: isVerified });
+            alert("Account is now live.");
             showSection('market');
-        } else { alert("Please complete all security fields."); }
+        });
     }
 
     db.ref('listings').on('value', (s) => {
         const grid = document.getElementById('listing-grid');
         grid.innerHTML = "";
-        if(!s.exists()) { grid.innerHTML = "<div style='grid-column:1/-1; color:#444;'>No featured accounts currently. Be the first!</div>"; }
         s.forEach(c => {
             const i = c.val();
             grid.innerHTML += `
                 <div class="card" onclick="openItem('${c.key}')">
                     <div class="card-img" style="background-image:url('${i.img}')"></div>
                     <div class="card-body">
-                        <div class="card-title">${i.title}</div>
+                        <div class="card-title">${i.title}${i.verifiedSeller ? '<span class="verified-check">☑️</span>' : ''}</div>
                         <div class="card-price">${i.price}</div>
                     </div>
                 </div>`;
@@ -185,39 +266,71 @@
             const i = s.val();
             document.getElementById('modal-body').innerHTML = `
                 <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px; border:1px solid #333;">
-                <h2 style="margin:0; font-size:28px;">${i.title}</h2>
+                <h2 style="margin:0; font-size:28px;">${i.title} ${i.verifiedSeller ? '☑️' : ''}</h2>
                 <div class="card-price" style="margin:10px 0 20px 0;">${i.price}</div>
                 <p style="color:var(--text-gray); line-height:1.6; text-align:left;">${i.desc}</p>
-                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center; margin-top:20px;">CONTACT VIA TELEGRAM</a>
+                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center; margin-top:20px;">CONTACT SELLER</a>
             `;
-            loadReviews(id);
+            document.getElementById('add-to-cart-btn').onclick = () => addToCart(id, i);
             document.getElementById('modal').style.display = "block";
         });
     }
 
     function closeModal() { document.getElementById('modal').style.display = "none"; }
 
-    function addReview() {
-        const t = document.getElementById('revInput').value;
-        if(t) {
-            db.ref('reviews/' + currentId).push({ text: t, date: new Date().toLocaleDateString() });
-            document.getElementById('revInput').value = "";
-        }
+    // CART LOGIC
+    function addToCart(id, item) {
+        if (!myCart.some(i => i.id === id)) {
+            myCart.push({ id, ...item });
+            localStorage.setItem('gv_cart', JSON.stringify(myCart));
+            updateCartCount();
+            alert("Added to cart!");
+        } else { alert("Already in cart."); }
+        closeModal();
     }
 
-    function loadReviews(id) {
-        db.ref('reviews/' + id).on('value', (s) => {
-            const d = document.getElementById('reviews');
-            d.innerHTML = "";
-            if(!s.exists()) { d.innerHTML = "<p style='color:#333; font-size:12px;'>No reviews yet.</p>"; }
-            s.forEach(c => { d.innerHTML += `<div style="padding:12px; background:#0a0c14; border-radius:8px; margin-bottom:8px; font-size:13px; border:1px solid #1a1e2e;">⭐ ${c.val().text}</div>`; });
+    function updateCartCount() { document.getElementById('cart-count').innerText = myCart.length; }
+    updateCartCount();
+
+    function renderCart() {
+        const grid = document.getElementById('cart-items');
+        const empty = document.getElementById('cart-empty');
+        grid.innerHTML = "";
+        if (myCart.length === 0) { empty.style.display = "block"; return; }
+        empty.style.display = "none";
+        myCart.forEach((i, index) => {
+            grid.innerHTML += `
+                <div class="card">
+                    <div class="card-img" style="background-image:url('${i.img}')"></div>
+                    <div class="card-body">
+                        <div class="card-title">${i.title}</div>
+                        <div class="card-price">${i.price}</div>
+                        <button class="btn" style="padding:10px; font-size:12px; margin-top:10px; background:#ff4444; color:white;" onclick="removeFromCart(${index})">REMOVE</button>
+                    </div>
+                </div>`;
         });
     }
 
-    paypal.Buttons({
-        createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("PAYMENT VERIFIED: Spot secured."); }); }
-    }).render('#paypal-button-container');
+    function removeFromCart(index) {
+        myCart.splice(index, 1);
+        localStorage.setItem('gv_cart', JSON.stringify(myCart));
+        renderCart();
+        updateCartCount();
+    }
+
+    // PRO PAYMENT
+    function setupProPayment(uid) {
+        document.getElementById('paypal-pro-container').innerHTML = '';
+        paypal.Buttons({
+            createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '15.00' } }] }); },
+            onApprove: (data, actions) => { return actions.order.capture().then(() => { 
+                db.ref('users/' + uid).update({ verified: true });
+                alert("PAYMENT VERIFIED: You are now a Verified Seller!");
+                location.reload();
+            }); }
+        }).render('#paypal-pro-container');
+    }
+
 </script>
 </body>
 </html>
