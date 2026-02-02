@@ -2,49 +2,123 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GamerVault | Live</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamerVault | AI-Verified Marketplace</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        body { background: #0d0d0d; color: white; font-family: sans-serif; text-align: center; }
-        .gold { color: #fed100; }
-        .box { background: #1a1a1a; border: 1px solid #333; padding: 20px; margin: 20px; border-radius: 10px; }
+        :root { --gold: #fed100; --dark: #0d0d0d; --card-bg: #161616; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
+        
+        /* THE MENU BUTTON (Three Lines) */
+        .menu-btn { position: fixed; top: 20px; left: 20px; font-size: 30px; cursor: pointer; z-index: 1001; color: var(--gold); background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 8px; border: 1px solid #333; }
+        
+        /* SIDEBAR */
+        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: #111; z-index: 1000; transition: 0.3s; padding-top: 80px; border-right: 1px solid var(--gold); box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; font-weight: bold; border-bottom: 1px solid #222; cursor: pointer; }
+        .sidebar a:hover { background: var(--gold); color: black; }
+
+        nav { padding: 20px; background: #111; border-bottom: 1px solid #222; text-align: center; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+        .card { background: var(--card-bg); border: 1px solid #333; border-radius: 15px; padding: 25px; margin-bottom: 20px; text-align: left; position: relative; }
+        .price { font-size: 28px; font-weight: 900; color: var(--gold); }
+        
+        /* FORM */
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: black; padding: 15px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; }
+        
         .hidden { display: none; }
+        .paywall { background: #1a1a1a; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; margin-top: 30px; }
     </style>
 </head>
 <body>
-    <h1 class="gold">GAMERVAULT</h1>
+
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
     
-    <div id="market">
-        <h2>Verified Listings</h2>
-        <div id="featured-list">No listings yet.</div>
-        
-        <div class="box">
+    <div class="sidebar" id="sidebar">
+        <a onclick="showSection('market')">🛒 BROWSE MARKET</a>
+        <a onclick="showSection('sell')">💰 SELL ACCOUNT</a>
+        <a href="https://t.me/YOUR_TELEGRAM_LINK">📞 SUPPORT</a>
+    </div>
+
+    <nav><div class="logo">GAMERVAULT</div></nav>
+
+    <div class="container" id="market-section">
+        <h2 class="gold">Verified Listings</h2>
+        <div id="featured-list">
+            <p style="color:#444;">No listings yet. Be the first!</p>
+        </div>
+
+        <div class="paywall">
             <h3 class="gold">Promote for $10.20</h3>
+            <p style="font-size: 14px; color: #888;">Move your account to the top instantly.</p>
             <div id="paypal-button-container"></div>
         </div>
     </div>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AewX9Z7LNB6DZTa8jcMeDa5SEGB_nq2f2A_tdpZesgEUROomDxIp-e-Bs2GXruNPs_aCRV1SY291Lvqa&currency=USD"></script>
+    <div class="container hidden" id="sell-section">
+        <h2 class="gold">AI Security Listing</h2>
+        <div class="card">
+            <input type="text" id="accTitle" placeholder="Account Title">
+            <input type="text" id="accPrice" placeholder="Price (e.g. $25)">
+            <textarea id="accDetails" rows="4" placeholder="Describe items... AI scans for scams."></textarea>
+            <input type="text" id="accContact" placeholder="Telegram Link">
+            <button class="btn" onclick="aiVerifyAndSubmit()">SUBMIT FOR AI REVIEW</button>
+        </div>
+    </div>
 
-    <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
-            databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com" 
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+<script src="https://www.paypal.com/sdk/js?client-id=AewX9Z7LNB6DZTa8jcMeDa5SEGB_nq2f2A_tdpZesgEUROomDxIp-e-Bs2GXruNPs_aCRV1SY291Lvqa&currency=USD"></script>
 
-        paypal.Buttons({
-            createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-            onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Paid! Contact Telegram."); }); }
-        }).render('#paypal-button-container');
+<script>
+    // YOUR KEYS
+    const firebaseConfig = { 
+        apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
+        databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        db.ref('featured').on('value', (s) => {
-            const list = document.getElementById('featured-list');
-            list.innerHTML = "";
-            s.forEach(c => { list.innerHTML += `<div class='box'>${c.val().title} - ${c.val().price}</div>`; });
-        });
-    </script>
+    // MENU LOGIC
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+    function showSection(section) {
+        document.getElementById('market-section').classList.add('hidden');
+        document.getElementById('sell-section').classList.add('hidden');
+        document.getElementById(section + '-section').classList.remove('hidden');
+        toggleMenu();
+    }
+
+    // AI SUBMIT LOGIC
+    function aiVerifyAndSubmit() {
+        const title = document.getElementById('accTitle').value;
+        const price = document.getElementById('accPrice').value;
+        const link = document.getElementById('accContact').value;
+        if(title && price && link) {
+            db.ref('featured').push({ title, price, link });
+            alert("✅ AI VERIFIED: Listing is live!");
+            showSection('market');
+        } else { alert("Fill all fields!"); }
+    }
+
+    // LOAD DATA
+    db.ref('featured').on('value', (s) => {
+        const list = document.getElementById('featured-list');
+        list.innerHTML = "";
+        if(s.exists()){
+            s.forEach(c => {
+                const acc = c.val();
+                list.innerHTML += `<div class='card'><h3>${acc.title}</h3><p class='price'>${acc.price}</p><a href='${acc.link}' class='btn'>CONTACT SELLER</a></div>`;
+            });
+        }
+    });
+
+    // RENDER PAYPAL
+    paypal.Buttons({
+        createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
+        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Paid! Refreshing..."); location.reload(); }); }
+    }).render('#paypal-button-container');
+</script>
 </body>
 </html>
