@@ -332,5 +332,69 @@
     }
 
 </script>
+<script>
+    // FIX 1: Hide everything by default so you don't see "Logout" while signed out
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('nav-logout').classList.add('hidden');
+        document.getElementById('nav-sell').classList.add('hidden');
+        document.getElementById('nav-settings').classList.add('hidden');
+        document.getElementById('nav-auth').classList.remove('hidden');
+    });
+
+    // AUTH OBSERVER - This is the "Brain" that fixes the Logout/Seller error
+    auth.onAuthStateChanged(user => {
+        const authNav = document.getElementById('nav-auth');
+        const logoutNav = document.getElementById('nav-logout');
+        const sellNav = document.getElementById('nav-sell');
+        const settingsNav = document.getElementById('nav-settings');
+
+        if (user) {
+            // Only show logout if actually signed in
+            authNav.classList.add('hidden');
+            logoutNav.classList.remove('hidden');
+            
+            db.ref('users/' + user.uid).once('value', s => {
+                const data = s.val();
+                if (data && data.role === 'seller') {
+                    sellNav.classList.remove('hidden');
+                    settingsNav.classList.remove('hidden');
+                    document.getElementById('set-role').innerText = "Seller";
+                    renderProPayment(user.uid); // Render the $15 button only for sellers
+                }
+                document.getElementById('set-email').innerText = "Email: " + user.email;
+            });
+        } else {
+            // Keep it clean if signed out
+            authNav.classList.remove('hidden');
+            logoutNav.classList.add('hidden');
+            sellNav.classList.add('hidden');
+            settingsNav.classList.add('hidden');
+        }
+    });
+
+    // FIX 2: Re-adding the $10.20 Spotlight (Original Feature)
+    function renderSpotlightPayment() {
+        paypal.Buttons({
+            createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
+            onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Spotlight Secured!"); }); }
+        }).render('#paypal-button-container'); // Your original container
+    }
+    renderSpotlightPayment();
+
+    // FIX 3: Re-adding the $15.00 Pro Feature Button
+    function renderProPayment(uid) {
+        document.getElementById('paypal-pro-container').innerHTML = ""; // Clear it first
+        paypal.Buttons({
+            createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '15.00' } }] }); },
+            onApprove: (data, actions) => { 
+                return actions.order.capture().then(() => { 
+                    db.ref('users/' + uid).update({ verified: true });
+                    alert("Verified Seller Status Active!");
+                    location.reload();
+                }); 
+            }
+        }).render('#paypal-pro-container');
+    }
+</script>
 </body>
 </html>
