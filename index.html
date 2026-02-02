@@ -45,11 +45,48 @@
         
         footer { padding: 40px 20px; text-align: center; border-top: 1px solid #222; color: #555; font-size: 12px; font-weight: 600; text-transform: uppercase; }
     </style>
+	<style>
+  /* Paste the CSS code I gave you here */
+  .logo-link {
+      text-decoration: none;
+      display: inline-block;
+  }
+  
+  .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 32px;
+      font-weight: bold;
+      color: #FF8C00;
+      text-transform: uppercase;
+  }
+
+  /* ... and the rest of the vault CSS ... */
+</style>
 </head>
 <body>
 
 <header>
-    <div class="logo">GAMERVAULT</div>
+    <a href="https://bdpco.github.io/gamervault/" class="logo-link" title="Refresh Page">
+  <div class="logo-container">
+    <span class="logo-text">G</span>
+    <span class="logo-text">A</span>
+    <span class="logo-text">M</span>
+    <span class="logo-text">E</span>
+    <span class="logo-text">R</span>
+    <span class="logo-text">V</span>
+    <div class="vault-a">
+       <div class="vault-circle">
+         <div class="vault-dial"></div>
+       </div>
+    </div>
+    <span class="logo-text">U</span>
+    <span class="logo-text">L</span>
+    <span class="logo-text">T</span>
+  </div>
+</a>
     <div class="ticker">🔥 14 Accounts Sold via Escrow • Safe & Secure</div>
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
 </header>
