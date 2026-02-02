@@ -98,7 +98,7 @@
     <div class="section-header">Join the Vault</div>
     <div style="max-width: 500px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f; text-align: center;">
         <input type="email" id="authEmail" placeholder="Enter your email address">
-        <button class="btn" onclick="sendAuthLink()">SEND SIGN-IN LINK</button>
+<button class="btn" onclick="sendAuthLink()">SEND SIGN-IN LINK</button>
     </div>
 </div>
 
@@ -117,7 +117,26 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const auth = firebase.auth();
+// Check if the current page URL is actually a sign-in link
+if (auth.isSignInWithEmailLink(window.location.href)) {
+    // Retrieve the email we saved earlier
+    let email = window.localStorage.getItem('emailForSignIn');
+    
+    // If they opened the link on a different device/browser, ask for the email again
+    if (!email) {
+        email = window.prompt('Please provide your email for confirmation');
+    }
 
+    auth.signInWithEmailLink(email, window.location.href)
+        .then((result) => {
+            window.localStorage.removeItem('emailForSignIn'); // Clean up
+            alert("Welcome to the Vault!");
+            window.location.reload(); 
+        })
+        .catch((error) => {
+            alert("Link expired or invalid.");
+        });
+}
     // SIDEBAR LOGIC
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
     function showSection(s) {
@@ -125,6 +144,33 @@
         document.getElementById(s + '-section').classList.remove('hidden');
         if(document.getElementById('sidebar').classList.contains('active')) toggleMenu();
     }
+	
+	function sendAuthLink() {
+    const email = document.getElementById('authEmail').value; // Grabs the email from the ID above
+    
+    const actionCodeSettings = {
+        url: 'https://your-website-url.com', // Must be in your "Authorized Domains"
+        handleCodeInApp: true
+    };
+
+    auth.sendSignInLinkToEmail(email, actionCodeSettings)
+        .then(() => {
+            // Save the email locally so they don't have to re-type it later
+            window.localStorage.setItem('emailForSignIn', email); 
+            alert("Link sent! Check your inbox.");
+        })
+        .catch((error) => {
+            alert("Error: " + error.message);
+        });
+}
+function logout() {
+    auth.signOut().then(() => {
+        alert("Logged out successfully!");
+        location.reload(); // This refreshes the page so the login link reappears
+    }).catch((error) => {
+        console.error("Logout Error:", error);
+    });
+}
 
     // AUTH OBSERVER (This fixes the Logout glitch)
     auth.onAuthStateChanged(user => {
