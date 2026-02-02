@@ -10,51 +10,37 @@
     <style>
         :root { --gold: #fed100; --dark: #0d0f1a; --card-bg: #161925; --text-gray: #a0a0a0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
-        
-        /* THE ICONIC HEADER */
         header { background: var(--gold); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid #000; }
         .logo { color: #000; font-weight: 900; font-size: 24px; letter-spacing: -1px; }
         .ticker { font-size: 11px; font-weight: bold; color: #000; text-transform: uppercase; }
         .menu-btn { cursor: pointer; color: #000; font-size: 28px; line-height: 1; }
-
-        /* HERO SECTION */
         .hero { padding: 80px 20px; text-align: center; background: radial-gradient(circle at center, #1a1e2e 0%, var(--dark) 100%); }
         .hero h1 { font-size: 48px; margin: 0; font-weight: 900; }
         .hero h2 { font-size: 42px; margin: 0; color: var(--gold); font-weight: 900; }
         .hero p { color: var(--text-gray); max-width: 600px; margin: 20px auto; font-size: 16px; line-height: 1.6; }
-
-        /* MARKETPLACE GRID */
         .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         .section-header { text-align: center; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; font-weight: 900; margin-bottom: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #2a2e3f; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .card:hover { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #2a2e3f; cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); border-color: var(--gold); }
         .card-img { width: 100%; height: 200px; background-size: cover; background-position: center; border-bottom: 1px solid #2a2e3f; }
         .card-body { padding: 20px; }
-        .card-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-title { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
         .card-price { font-size: 26px; font-weight: 900; color: var(--gold); }
-
-        /* ROLE SELECTOR STYLES */
         .role-selector { display: flex; gap: 10px; margin: 20px 0; }
         .role-btn { flex: 1; padding: 15px; border: 1px solid #2a2e3f; background: #0a0c14; color: white; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
         .role-btn.active { border-color: var(--gold); color: var(--gold); }
-
-        /* SIDEBAR & MODALS */
         .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; z-index: 2000; transition: 0.3s; padding-top: 80px; border-left: 2px solid var(--gold); }
         .sidebar.active { right: 0; }
         .sidebar a { display: block; padding: 15px 30px; color: white; text-decoration: none; font-weight: 700; border-bottom: 1px solid #111; cursor: pointer; }
-        .sidebar a:hover { color: var(--gold); background: #080808; }
-        
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.96); z-index: 3000; display: none; overflow-y: auto; }
         .modal-box { max-width: 550px; margin: 50px auto; background: var(--card-bg); padding: 35px; border-radius: 20px; border: 1px solid var(--gold); position: relative; }
-        
-        input, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #0a0c14; border: 1px solid #2a2e3f; color: white; border-radius: 10px; box-sizing: border-box; font-size: 15px; }
-        .btn { background: var(--gold); color: #000; padding: 18px; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 16px; transition: 0.2s; }
-        .btn:hover { background: #fff; transform: scale(1.02); }
+        input, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #0a0c14; border: 1px solid #2a2e3f; color: white; border-radius: 10px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: #000; padding: 18px; border: none; border-radius: 10px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; }
         .hidden { display: none; }
-        .verified-check { color: #1da1f2; margin-left: 5px; font-size: 16px; }
-        
-        footer { padding: 40px 20px; text-align: center; border-top: 1px solid #222; color: #555; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .verified-check { color: #1da1f2; margin-left: 5px; }
+        .spotlight { background: #000; border: 2px solid var(--gold); border-radius: 20px; padding: 50px 20px; margin: 60px 0; text-align: center; }
+        footer { padding: 40px 20px; text-align: center; color: #555; font-size: 12px; font-weight: 600; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -77,14 +63,12 @@
 <div id="auth-section" class="container hidden">
     <div class="section-header">Join the Vault</div>
     <div style="max-width: 500px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f; text-align: center;">
-        <p>Choose your path to get started:</p>
         <div class="role-selector">
             <div id="role-buyer" class="role-btn active" onclick="setRole('buyer')">I AM A BUYER</div>
             <div id="role-seller" class="role-btn" onclick="setRole('seller')">I AM A SELLER</div>
         </div>
         <input type="email" id="authEmail" placeholder="Enter your email address">
         <button class="btn" onclick="sendAuthLink()">SEND SECURE SIGN-IN LINK</button>
-        <p style="font-size: 12px; color: var(--text-gray); margin-top: 20px;">No password needed. We'll email you a login link.</p>
     </div>
 </div>
 
@@ -92,64 +76,62 @@
     <div class="section-header">Account Settings</div>
     <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
         <h3 id="set-email">Email: loading...</h3>
-        <p>Status: <span id="set-role" style="color: var(--gold); font-weight: bold;">Seller</span></p>
-        <hr style="border: 0; border-top: 1px solid #222; margin: 20px 0;">
-        
+        <p>Status: <span id="set-role" style="color: var(--gold); font-weight: bold;">Buyer</span></p>
         <div id="pro-feature-box">
             <h4 style="color: var(--gold);">PRO FEATURE: VERIFIED SELLER</h4>
-            <p style="font-size: 14px; color: var(--text-gray);">Get a blue checkmark on all your listings to build maximum trust.</p>
+            <p>Get a blue checkmark on all listings.</p>
             <p style="font-weight: bold; font-size: 18px;">Price: $15.00 USD</p>
-            <div id="paypal-pro-container" style="margin-top: 20px;"></div>
+            <div id="paypal-pro-container"></div>
         </div>
     </div>
-</div>
-
-<div id="cart-section" class="container hidden">
-    <div class="section-header">My Shopping Cart</div>
-    <div id="cart-items" class="grid"></div>
-    <div id="cart-empty" style="text-align: center; color: #444; padding: 50px;">Your cart is empty.</div>
 </div>
 
 <div id="market-section">
     <div class="hero">
         <h1>Trade Accounts.</h1>
         <h2>Zero Risk.</h2>
-        <p>One of the newest most secure marketplace for Steam, GTA, Epic Games accounts etc. Powered by BDP Verified Escrow.</p>
-        <div style="color: #00ff00; font-size: 11px; font-weight: bold; margin-top: 10px;">● LIVE AUTOMATION ACTIVE</div>
+        <p>One of the newest most secure marketplace for Steam, GTA, Epic Games accounts. Powered by BDP Verified Escrow.</p>
     </div>
     <div class="container">
         <div class="section-header">VIP Featured Listings</div>
         <div class="grid" id="listing-grid"></div>
-    </div>
-</div>
 
-<div class="container hidden" id="sell-section">
-    <div class="section-header">Seller Authorization</div>
-    <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
-        <input type="text" id="accTitle" placeholder="Account Name">
-        <input type="text" id="accPrice" placeholder="Price (USD)">
-        <input type="text" id="accImg" placeholder="Image URL (Imgur link)">
-        <textarea id="accDesc" rows="5" placeholder="Full Account Details"></textarea>
-        <input type="text" id="accLink" placeholder="Your Telegram Contact Link">
-        <button class="btn" onclick="postToFirebase()">SUBMIT TO MARKETPLACE</button>
-    </div>
-</div>
-
-<div id="modal" class="modal">
-    <div class="modal-box">
-        <span onclick="closeModal()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:35px; color:#555;">&times;</span>
-        <div id="modal-body"></div>
-        <button id="add-to-cart-btn" class="btn" style="margin-top: 10px; background: #fff;">ADD TO CART</button>
-        <div style="margin-top:25px; padding-top:20px; border-top:1px solid #222;">
-            <div id="reviews" style="max-height:150px; overflow-y:auto; margin-bottom:20px;"></div>
+        <div class="spotlight">
+            <div style="font-size: 32px; font-weight: 900; color: var(--gold);">Seller Spotlight</div>
+            <p style="color: var(--text-gray);">Promote your listing to the top of the vault.</p>
+            <span style="font-size: 48px; font-weight: 900; display: block; margin: 15px 0;">$10.20</span>
+            <div id="paypal-button-container" style="max-width:350px; margin: 20px auto;"></div>
         </div>
     </div>
 </div>
 
-<footer>
-    GAMERVAULT ESCROW SERVICES © 2026<br>
-    Trusted by the Erogram Community
-</footer>
+<div id="sell-section" class="container hidden">
+    <div class="section-header">Seller Authorization</div>
+    <div style="max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid #2a2e3f;">
+        <input type="text" id="accTitle" placeholder="Account Name">
+        <input type="text" id="accPrice" placeholder="Price (USD)">
+        <input type="text" id="accImg" placeholder="Image URL">
+        <textarea id="accDesc" rows="5" placeholder="Details"></textarea>
+        <input type="text" id="accLink" placeholder="Telegram Link">
+        <button class="btn" onclick="postToFirebase()">SUBMIT TO MARKETPLACE</button>
+    </div>
+</div>
+
+<div id="cart-section" class="container hidden">
+    <div class="section-header">My Shopping Cart</div>
+    <div id="cart-items" class="grid"></div>
+    <div id="cart-empty" style="text-align: center; padding: 50px;">Your cart is empty.</div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <span onclick="closeModal()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:35px;">&times;</span>
+        <div id="modal-body"></div>
+        <button id="add-to-cart-btn" class="btn" style="margin-top: 10px; background: #fff;">ADD TO CART</button>
+    </div>
+</div>
+
+<footer>GAMERVAULT ESCROW SERVICES © 2026</footer>
 
 <script src="https://www.paypal.com/sdk/js?client-id=AewX9Z7LNB6DZTa8jcMeDa5SEGB_nq2f2A_tdpZesgEUROomDxIp-e-Bs2GXruNPs_aCRV1SY291Lvqa&currency=USD"></script>
 <script>
@@ -162,12 +144,11 @@
     const db = firebase.database();
     const auth = firebase.auth();
     
-    let currentId = "";
     let selectedRole = "buyer";
     let myCart = JSON.parse(localStorage.getItem('gv_cart')) || [];
 
-    // UI LOGIC
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+    
     function showSection(s) {
         document.querySelectorAll('.container, #market-section').forEach(el => el.classList.add('hidden'));
         document.getElementById(s + '-section').classList.remove('hidden');
@@ -176,7 +157,6 @@
         window.scrollTo(0,0);
     }
 
-    // AUTH LOGIC
     function setRole(role) {
         selectedRole = role;
         document.getElementById('role-buyer').classList.toggle('active', role === 'buyer');
@@ -190,59 +170,49 @@
             await auth.sendSignInLinkToEmail(email, actionCodeSettings);
             window.localStorage.setItem('emailForSignIn', email);
             window.localStorage.setItem('tempRole', selectedRole);
-            alert("Secure link sent to " + email);
+            alert("Check your email for the link!");
         } catch (e) { alert(e.message); }
     }
 
-    // HANDLE INCOMING LINK
     if (auth.isSignInWithEmailLink(window.location.href)) {
-        let email = window.localStorage.getItem('emailForSignIn') || window.prompt('Confirm your email:');
+        let email = window.localStorage.getItem('emailForSignIn') || window.prompt('Enter email to confirm:');
         auth.signInWithEmailLink(email, window.location.href).then(async (res) => {
             if (res.additionalUserInfo.isNewUser) {
                 const role = window.localStorage.getItem('tempRole') || 'buyer';
                 await db.ref('users/' + res.user.uid).set({ email, role, verified: false });
             }
-            window.localStorage.removeItem('emailForSignIn');
             window.location.href = window.location.pathname;
         });
     }
 
-    // AUTH OBSERVER
     auth.onAuthStateChanged(user => {
+        const navAuth = document.getElementById('nav-auth');
+        const navLogout = document.getElementById('nav-logout');
+        const navSell = document.getElementById('nav-sell');
+        const navSettings = document.getElementById('nav-settings');
+
         if (user) {
-            document.getElementById('nav-auth').classList.add('hidden');
-            document.getElementById('nav-logout').classList.remove('hidden');
+            navAuth.classList.add('hidden');
+            navLogout.classList.remove('hidden');
             db.ref('users/' + user.uid).once('value', s => {
                 const data = s.val();
-                if (data.role === 'seller') {
-                    document.getElementById('nav-sell').classList.remove('hidden');
-                    document.getElementById('nav-settings').classList.remove('hidden');
-                    setupProPayment(user.uid);
-                }
                 document.getElementById('set-email').innerText = "Email: " + user.email;
                 document.getElementById('set-role').innerText = data.role.toUpperCase();
+                if (data.role === 'seller') {
+                    navSell.classList.remove('hidden');
+                    navSettings.classList.remove('hidden');
+                    renderProPayment(user.uid);
+                }
             });
+        } else {
+            navAuth.classList.remove('hidden');
+            navLogout.classList.add('hidden');
+            navSell.classList.add('hidden');
+            navSettings.classList.add('hidden');
         }
     });
 
-    function logout() { auth.signOut(); location.reload(); }
-
-    // MARKET LOGIC
-    function postToFirebase() {
-        const title = document.getElementById('accTitle').value;
-        const price = document.getElementById('accPrice').value;
-        const img = document.getElementById('accImg').value;
-        const desc = document.getElementById('accDesc').value;
-        const link = document.getElementById('accLink').value;
-        const user = auth.currentUser;
-
-        db.ref('users/' + user.uid).once('value', s => {
-            const isVerified = s.val().verified || false;
-            db.ref('listings').push({ title, price: "$"+price, img, desc, link, seller: user.uid, verifiedSeller: isVerified });
-            alert("Account is now live.");
-            showSection('market');
-        });
-    }
+    function logout() { auth.signOut().then(() => location.reload()); }
 
     db.ref('listings').on('value', (s) => {
         const grid = document.getElementById('listing-grid');
@@ -253,7 +223,7 @@
                 <div class="card" onclick="openItem('${c.key}')">
                     <div class="card-img" style="background-image:url('${i.img}')"></div>
                     <div class="card-body">
-                        <div class="card-title">${i.title}${i.verifiedSeller ? '<span class="verified-check">☑️</span>' : ''}</div>
+                        <div class="card-title">${i.title}${i.verifiedSeller ? ' ☑️' : ''}</div>
                         <div class="card-price">${i.price}</div>
                     </div>
                 </div>`;
@@ -261,15 +231,13 @@
     });
 
     function openItem(id) {
-        currentId = id;
         db.ref('listings/' + id).once('value', (s) => {
             const i = s.val();
             document.getElementById('modal-body').innerHTML = `
-                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px; border:1px solid #333;">
-                <h2 style="margin:0; font-size:28px;">${i.title} ${i.verifiedSeller ? '☑️' : ''}</h2>
-                <div class="card-price" style="margin:10px 0 20px 0;">${i.price}</div>
-                <p style="color:var(--text-gray); line-height:1.6; text-align:left;">${i.desc}</p>
-                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center; margin-top:20px;">CONTACT SELLER</a>
+                <img src="${i.img}" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                <h2>${i.title}</h2>
+                <div class="card-price">${i.price}</div>
+                <p>${i.desc}</p>
             `;
             document.getElementById('add-to-cart-btn').onclick = () => addToCart(id, i);
             document.getElementById('modal').style.display = "block";
@@ -278,14 +246,13 @@
 
     function closeModal() { document.getElementById('modal').style.display = "none"; }
 
-    // CART LOGIC
     function addToCart(id, item) {
         if (!myCart.some(i => i.id === id)) {
             myCart.push({ id, ...item });
             localStorage.setItem('gv_cart', JSON.stringify(myCart));
             updateCartCount();
-            alert("Added to cart!");
-        } else { alert("Already in cart."); }
+            alert("Added!");
+        }
         closeModal();
     }
 
@@ -294,103 +261,30 @@
 
     function renderCart() {
         const grid = document.getElementById('cart-items');
-        const empty = document.getElementById('cart-empty');
         grid.innerHTML = "";
-        if (myCart.length === 0) { empty.style.display = "block"; return; }
-        empty.style.display = "none";
-        myCart.forEach((i, index) => {
-            grid.innerHTML += `
-                <div class="card">
-                    <div class="card-img" style="background-image:url('${i.img}')"></div>
-                    <div class="card-body">
-                        <div class="card-title">${i.title}</div>
-                        <div class="card-price">${i.price}</div>
-                        <button class="btn" style="padding:10px; font-size:12px; margin-top:10px; background:#ff4444; color:white;" onclick="removeFromCart(${index})">REMOVE</button>
-                    </div>
-                </div>`;
+        if (myCart.length === 0) { document.getElementById('cart-empty').style.display = "block"; return; }
+        document.getElementById('cart-empty').style.display = "none";
+        myCart.forEach((i, idx) => {
+            grid.innerHTML += `<div class="card"><div class="card-body">${i.title} - ${i.price} <button onclick="removeFromCart(${idx})">X</button></div></div>`;
         });
     }
 
-    function removeFromCart(index) {
-        myCart.splice(index, 1);
-        localStorage.setItem('gv_cart', JSON.stringify(myCart));
-        renderCart();
-        updateCartCount();
-    }
+    function removeFromCart(idx) { myCart.splice(idx, 1); localStorage.setItem('gv_cart', JSON.stringify(myCart)); renderCart(); updateCartCount(); }
 
-    // PRO PAYMENT
-    function setupProPayment(uid) {
-        document.getElementById('paypal-pro-container').innerHTML = '';
-        paypal.Buttons({
-            createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '15.00' } }] }); },
-            onApprove: (data, actions) => { return actions.order.capture().then(() => { 
-                db.ref('users/' + uid).update({ verified: true });
-                alert("PAYMENT VERIFIED: You are now a Verified Seller!");
-                location.reload();
-            }); }
-        }).render('#paypal-pro-container');
-    }
-	
-<script>
-    // FIX 1: Hide everything by default so you don't see "Logout" while signed out
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('nav-logout').classList.add('hidden');
-        document.getElementById('nav-sell').classList.add('hidden');
-        document.getElementById('nav-settings').classList.add('hidden');
-        document.getElementById('nav-auth').classList.remove('hidden');
-    });
-
-    // AUTH OBSERVER - This is the "Brain" that fixes the Logout/Seller error
-    auth.onAuthStateChanged(user => {
-        const authNav = document.getElementById('nav-auth');
-        const logoutNav = document.getElementById('nav-logout');
-        const sellNav = document.getElementById('nav-sell');
-        const settingsNav = document.getElementById('nav-settings');
-
-        if (user) {
-            // Only show logout if actually signed in
-            authNav.classList.add('hidden');
-            logoutNav.classList.remove('hidden');
-            
-            db.ref('users/' + user.uid).once('value', s => {
-                const data = s.val();
-                if (data && data.role === 'seller') {
-                    sellNav.classList.remove('hidden');
-                    settingsNav.classList.remove('hidden');
-                    document.getElementById('set-role').innerText = "Seller";
-                    renderProPayment(user.uid); // Render the $15 button only for sellers
-                }
-                document.getElementById('set-email').innerText = "Email: " + user.email;
-            });
-        } else {
-            // Keep it clean if signed out
-            authNav.classList.remove('hidden');
-            logoutNav.classList.add('hidden');
-            sellNav.classList.add('hidden');
-            settingsNav.classList.add('hidden');
-        }
-    });
-
-    // FIX 2: Re-adding the $10.20 Spotlight (Original Feature)
     function renderSpotlightPayment() {
         paypal.Buttons({
             createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-            onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Spotlight Secured!"); }); }
-        }).render('#paypal-button-container'); // Your original container
+            onApprove: (data, actions) => { alert("Paid!"); }
+        }).render('#paypal-button-container');
     }
     renderSpotlightPayment();
 
-    // FIX 3: Re-adding the $15.00 Pro Feature Button
     function renderProPayment(uid) {
-        document.getElementById('paypal-pro-container').innerHTML = ""; // Clear it first
+        document.getElementById('paypal-pro-container').innerHTML = "";
         paypal.Buttons({
             createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '15.00' } }] }); },
             onApprove: (data, actions) => { 
-                return actions.order.capture().then(() => { 
-                    db.ref('users/' + uid).update({ verified: true });
-                    alert("Verified Seller Status Active!");
-                    location.reload();
-                }); 
+                db.ref('users/' + uid).update({ verified: true }).then(() => location.reload());
             }
         }).render('#paypal-pro-container');
     }
