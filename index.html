@@ -3,95 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamerVault | Premium Exchange</title>
+    <title>GamerVault | Verified Gaming Assets</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root { --gold: #fed100; --dark: #0a0a0a; --gray: #1a1a1a; }
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; }
+        :root { --gold: #fed100; --dark: #12141d; --card-bg: #1c1f2b; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; margin: 0; }
         
-        /* Minimalist Navigation */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #222; }
-        .logo { font-size: 20px; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
-        .menu-icon { font-size: 24px; cursor: pointer; color: var(--gold); }
-
-        /* Sidebar Overlay */
-        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding-top: 80px; border-left: 1px solid var(--gold); }
+        /* THE ICONIC YELLOW HEADER (From IMG_3143) */
+        header { background: var(--gold); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; }
+        .logo { color: #000; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
+        .status-tag { background: #000; color: #00ff00; font-size: 10px; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        
+        /* MENU & SIDEBAR */
+        .menu-btn { cursor: pointer; color: #000; font-size: 24px; font-weight: bold; }
+        .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: #000; z-index: 2000; transition: 0.3s; padding-top: 80px; border-left: 2px solid var(--gold); }
         .sidebar.active { right: 0; }
-        .sidebar a { display: block; padding: 20px 30px; color: #fff; text-decoration: none; font-weight: 600; border-bottom: 1px solid #111; transition: 0.3s; }
-        .sidebar a:hover { color: var(--gold); background: #080808; }
+        .sidebar a { display: block; padding: 15px 30px; color: white; text-decoration: none; font-weight: bold; border-bottom: 1px solid #111; cursor: pointer; }
+        .sidebar a:hover { color: var(--gold); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; text-align: center; }
-        .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 3px; color: #555; margin-bottom: 30px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 50px 20px; text-align: center; }
+        h2 { text-transform: uppercase; letter-spacing: 2px; font-size: 18px; color: var(--gold); margin-bottom: 30px; }
 
-        /* Clean Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-        .card { background: var(--gray); border-radius: 12px; overflow: hidden; transition: 0.3s ease; border: 1px solid #222; text-align: left; }
-        .card:hover { transform: translateY(-8px); border-color: var(--gold); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .card-img { width: 100%; height: 200px; background-size: cover; background-position: center; filter: brightness(0.8); transition: 0.3s; }
-        .card:hover .card-img { filter: brightness(1); }
-        .card-content { padding: 20px; }
-        .card-price { font-size: 24px; font-weight: 900; color: var(--gold); margin-top: 10px; }
+        /* THE MARKETPLACE CARDS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid #2a2e3f; cursor: pointer; transition: 0.2s; text-align: left; }
+        .card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .card-img { width: 100%; height: 180px; background-size: cover; background-position: center; background-color: #000; }
+        .card-body { padding: 20px; }
+        .price { font-size: 24px; font-weight: 800; color: var(--gold); }
 
-        /* Modal Details */
+        /* MODAL POPUP */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; overflow-y: auto; }
-        .modal-content { max-width: 550px; margin: 50px auto; background: #111; padding: 30px; border-radius: 20px; border: 1px solid #333; }
+        .modal-content { max-width: 500px; margin: 40px auto; background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--gold); position: relative; }
         
-        /* UI Elements */
-        input, textarea { width: 100%; padding: 15px; margin: 10px 0; background: #111; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; padding: 16px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
-        .btn:hover { background: #e6bd00; transform: scale(1.02); }
+        input, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #000; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: #000; padding: 16px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; }
         .hidden { display: none; }
-        .footer-promo { margin-top: 100px; padding: 60px 20px; background: #080808; border-top: 1px solid #111; }
+
+        /* PROMOTION BOX (From IMG_3143) */
+        .promo-box { border: 2px solid var(--gold); border-radius: 15px; padding: 40px; margin-top: 60px; background: rgba(254, 209, 0, 0.05); }
     </style>
 </head>
 <body>
 
-<nav>
+<header>
     <div class="logo">GAMERVAULT</div>
-    <div class="menu-icon" onclick="toggleMenu()">☰</div>
-</nav>
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <span class="status-tag">● LIVE AUTOMATION ACTIVE</span>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    </div>
+</header>
 
 <div class="sidebar" id="sidebar">
-    <a onclick="showSection('market')">MARKETPLACE</a>
-    <a onclick="showSection('sell')">LIST ACCOUNT</a>
-    <a href="https://t.me/YOUR_USERNAME">LIVE SUPPORT</a>
+    <a onclick="showSection('market')">🛒 BROWSE MARKET</a>
+    <a onclick="showSection('sell')">💰 LIST YOUR ACCOUNT</a>
+    <a href="https://t.me/YOUR_USERNAME" target="_blank">📞 TELEGRAM SUPPORT</a>
 </div>
 
 <div class="container" id="market-section">
-    <div class="section-title">Verified Gaming Assets</div>
+    <h2>VIP Featured Listings</h2>
     <div class="grid" id="listing-grid">
         </div>
-</div>
 
-<div class="container hidden" id="sell-section">
-    <div class="section-title">Account Onboarding</div>
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
-        <input type="text" id="accTitle" placeholder="Account Name">
-        <input type="text" id="accPrice" placeholder="Price (USD)">
-        <input type="text" id="accImg" placeholder="Image URL (Imgur link)">
-        <textarea id="accDesc" rows="5" placeholder="Detailed Description"></textarea>
-        <input type="text" id="accLink" placeholder="Telegram Contact Link">
-        <button class="btn" onclick="postListing()">AUTHORIZE LISTING</button>
+    <div class="promo-box">
+        <h3 style="font-size: 24px; margin: 0;">Promote Your Account</h3>
+        <p style="color: #888;">Pay $10.20 to move your ad to the top automatically.</p>
+        <div id="paypal-button-container" style="max-width:350px; margin: 20px auto;"></div>
     </div>
 </div>
 
-<div class="footer-promo">
-    <div class="section-title">Premium Promotion</div>
-    <p style="color: #888;">Increase visibility by 400% with a featured slot.</p>
-    <div id="paypal-button-container" style="max-width: 350px; margin: 20px auto;"></div>
+<div class="container hidden" id="sell-section">
+    <h2>Seller Onboarding</h2>
+    <div style="max-width: 550px; margin: 0 auto; text-align: left; background: var(--card-bg); padding: 30px; border-radius: 15px;">
+        <input type="text" id="accTitle" placeholder="Account Title (e.g. Stacked Steam)">
+        <input type="text" id="accPrice" placeholder="Price in USD">
+        <input type="text" id="accImg" placeholder="Thumbnail Image URL (Imgur)">
+        <textarea id="accDesc" rows="4" placeholder="Description of items/skins"></textarea>
+        <input type="text" id="accLink" placeholder="Your Telegram Contact Link">
+        <button class="btn" onclick="postToFirebase()">SUBMIT FOR AI REVIEW</button>
+    </div>
 </div>
 
 <div id="modal" class="modal">
     <div class="modal-content">
-        <span onclick="closeModal()" style="float:right; cursor:pointer; font-size:30px; color:#555;">&times;</span>
+        <span onclick="closeModal()" style="position:absolute; right:20px; top:15px; cursor:pointer; font-size:28px;">&times;</span>
         <div id="modal-body"></div>
-        <div style="margin-top:20px;">
-            <div class="section-title" style="margin-bottom:10px;">User Reviews</div>
-            <div id="reviews" style="text-align:left; font-size:14px; max-height:150px; overflow-y:auto; color:#888;"></div>
-            <input type="text" id="revInput" placeholder="Add a review...">
-            <button class="btn" style="padding:10px;" onclick="addReview()">SUBMIT REVIEW</button>
-        </div>
+        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+        <h4 style="color:var(--gold); margin:0;">Buyer Reviews</h4>
+        <div id="reviews" style="text-align:left; font-size:14px; max-height:150px; overflow-y:auto; color:#aaa; margin:15px 0;"></div>
+        <input type="text" id="revInput" placeholder="Add your review...">
+        <button class="btn" style="padding:10px;" onclick="addReview()">POST REVIEW</button>
     </div>
 </div>
 
@@ -113,15 +115,15 @@
         toggleMenu();
     }
 
-    function postListing() {
+    function postToFirebase() {
         const title = document.getElementById('accTitle').value;
         const price = document.getElementById('accPrice').value;
         const img = document.getElementById('accImg').value;
         const desc = document.getElementById('accDesc').value;
         const link = document.getElementById('accLink').value;
-        if(title && price && img && link) {
-            db.ref('listings').push({ title, price, img, desc, link });
-            alert("Listing successfully broadcasted.");
+        if(title && price && img) {
+            db.ref('listings').push({ title, price: "$"+price, img, desc, link });
+            alert("AI SCAN COMPLETE: Listing Published.");
             showSection('market');
         }
     }
@@ -129,14 +131,15 @@
     db.ref('listings').on('value', (s) => {
         const grid = document.getElementById('listing-grid');
         grid.innerHTML = "";
+        if(!s.exists()) { grid.innerHTML = "<p style='color:#444;'>No active listings. Be the first!</p>"; }
         s.forEach(c => {
-            const item = c.val();
+            const i = c.val();
             grid.innerHTML += `
                 <div class="card" onclick="openItem('${c.key}')">
-                    <div class="card-img" style="background-image:url('${item.img}')"></div>
-                    <div class="card-content">
-                        <div style="font-weight:700; font-size:18px;">${item.title}</div>
-                        <div class="card-price">${item.price}</div>
+                    <div class="card-img" style="background-image:url('${i.img}')"></div>
+                    <div class="card-body">
+                        <div style="font-weight:700; margin-bottom:5px;">${i.title}</div>
+                        <div class="price">${i.price}</div>
                     </div>
                 </div>`;
         });
@@ -148,10 +151,10 @@
             const i = s.val();
             document.getElementById('modal-body').innerHTML = `
                 <img src="${i.img}" style="width:100%; border-radius:10px; margin-bottom:20px;">
-                <h2 style="margin:0;">${i.title}</h2>
-                <p style="color:#777; line-height:1.6;">${i.desc}</p>
-                <div class="card-price" style="margin-bottom:20px;">${i.price}</div>
-                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center;">CONTACT VIA TELEGRAM</a>
+                <h2 style="margin:0; color:white; text-align:left;">${i.title}</h2>
+                <p style="color:#888; text-align:left;">${i.desc}</p>
+                <div class="price" style="margin-bottom:20px; text-align:left;">${i.price}</div>
+                <a href="${i.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center;">CONTACT SELLER</a>
             `;
             loadReviews(id);
             document.getElementById('modal').style.display = "block";
@@ -172,13 +175,13 @@
         db.ref('reviews/' + id).on('value', (s) => {
             const d = document.getElementById('reviews');
             d.innerHTML = "";
-            s.forEach(c => { d.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #222;">${c.val().text} <span style="font-size:10px; opacity:0.3;">${c.val().date}</span></div>`; });
+            s.forEach(c => { d.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid #222;">⭐ ${c.val().text}</div>`; });
         });
     }
 
     paypal.Buttons({
         createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Premium slot activated."); }); }
+        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Payment Verified."); }); }
     }).render('#paypal-button-container');
 </script>
 </body>
