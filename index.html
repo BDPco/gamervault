@@ -3,122 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamerVault | AI-Verified Marketplace</title>
+    <title>GamerVault | Verified Gaming Exchange</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         :root { --gold: #fed100; --dark: #0d0d0d; --card-bg: #161616; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; overflow-x: hidden; }
         
-        /* THE MENU BUTTON (Three Lines) */
-        .menu-btn { position: fixed; top: 20px; left: 20px; font-size: 30px; cursor: pointer; z-index: 1001; color: var(--gold); background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 8px; border: 1px solid #333; }
-        
-        /* SIDEBAR */
-        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: #111; z-index: 1000; transition: 0.3s; padding-top: 80px; border-right: 1px solid var(--gold); box-shadow: 10px 0 20px rgba(0,0,0,0.5); }
+        .menu-btn { position: fixed; top: 20px; left: 20px; font-size: 30px; cursor: pointer; z-index: 1001; color: var(--gold); background: rgba(0,0,0,0.7); padding: 5px 12px; border-radius: 8px; }
+        .sidebar { position: fixed; left: -300px; top: 0; width: 280px; height: 100%; background: #111; z-index: 1000; transition: 0.3s; padding-top: 80px; border-right: 1px solid var(--gold); }
         .sidebar.active { left: 0; }
         .sidebar a { display: block; padding: 15px 25px; color: white; text-decoration: none; font-weight: bold; border-bottom: 1px solid #222; cursor: pointer; }
-        .sidebar a:hover { background: var(--gold); color: black; }
 
-        nav { padding: 20px; background: #111; border-bottom: 1px solid #222; text-align: center; }
-        .logo { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
-
-        .container { max-width: 800px; margin: 0 auto; padding: 60px 20px; text-align: center; }
-        .card { background: var(--card-bg); border: 1px solid #333; border-radius: 15px; padding: 25px; margin-bottom: 20px; text-align: left; position: relative; }
-        .price { font-size: 28px; font-weight: 900; color: var(--gold); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 60px 20px; text-align: center; }
         
-        /* FORM */
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; padding: 15px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; }
+        /* Marketplace Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .card { background: var(--card-bg); border: 1px solid #333; border-radius: 12px; overflow: hidden; cursor: pointer; transition: 0.3s; text-align: left; }
+        .card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .card-img { width: 100%; height: 150px; background-size: cover; background-position: center; background-color: #222; }
+        .card-info { padding: 15px; }
         
+        /* Modal / Details Popup */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; overflow-y: auto; }
+        .modal-content { max-width: 600px; margin: 50px auto; background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid var(--gold); }
+        
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: black; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
         .hidden { display: none; }
-        .paywall { background: #1a1a1a; border: 2px solid var(--gold); border-radius: 20px; padding: 30px; margin-top: 30px; }
     </style>
 </head>
 <body>
 
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
-    
     <div class="sidebar" id="sidebar">
         <a onclick="showSection('market')">🛒 BROWSE MARKET</a>
         <a onclick="showSection('sell')">💰 SELL ACCOUNT</a>
-        <a href="https://t.me/YOUR_TELEGRAM_LINK">📞 SUPPORT</a>
     </div>
 
-    <nav><div class="logo">GAMERVAULT</div></nav>
-
     <div class="container" id="market-section">
-        <h2 class="gold">Verified Listings</h2>
-        <div id="featured-list">
-            <p style="color:#444;">No listings yet. Be the first!</p>
-        </div>
-
-        <div class="paywall">
-            <h3 class="gold">Promote for $10.20</h3>
-            <p style="font-size: 14px; color: #888;">Move your account to the top instantly.</p>
-            <div id="paypal-button-container"></div>
-        </div>
+        <h1 style="color:var(--gold)">Verified Marketplace</h1>
+        <div class="grid" id="featured-list"></div>
     </div>
 
     <div class="container hidden" id="sell-section">
-        <h2 class="gold">AI Security Listing</h2>
-        <div class="card">
+        <h2 style="color:var(--gold)">List Your Account</h2>
+        <div style="background:#1a1a1a; padding:20px; border-radius:15px; text-align:left;">
             <input type="text" id="accTitle" placeholder="Account Title">
-            <input type="text" id="accPrice" placeholder="Price (e.g. $25)">
-            <textarea id="accDetails" rows="4" placeholder="Describe items... AI scans for scams."></textarea>
-            <input type="text" id="accContact" placeholder="Telegram Link">
-            <button class="btn" onclick="aiVerifyAndSubmit()">SUBMIT FOR AI REVIEW</button>
+            <input type="text" id="accPrice" placeholder="Price (e.g. $50)">
+            <input type="text" id="accImg" placeholder="Image URL (use imgur.com or discord link)">
+            <textarea id="accDesc" placeholder="Full Details / Rare Items"></textarea>
+            <input type="text" id="accContact" placeholder="Your Telegram Link">
+            <button class="btn" onclick="submitAccount()">POST LISTING</button>
         </div>
     </div>
 
-<script src="https://www.paypal.com/sdk/js?client-id=AewX9Z7LNB6DZTa8jcMeDa5SEGB_nq2f2A_tdpZesgEUROomDxIp-e-Bs2GXruNPs_aCRV1SY291Lvqa&currency=USD"></script>
+    <div id="item-modal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="float:right; cursor:pointer; font-size:24px;">&times;</span>
+            <div id="modal-body"></div>
+            <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+            <h4>Reviews</h4>
+            <div id="review-list" style="text-align:left; font-size:14px; max-height:200px; overflow-y:auto; margin-bottom:10px;"></div>
+            <input type="text" id="revText" placeholder="Write a review...">
+            <button class="btn" onclick="submitReview()">POST REVIEW</button>
+        </div>
+    </div>
 
 <script>
-    // YOUR KEYS
     const firebaseConfig = { 
         apiKey: "AIzaSyAwWWQAuYFTCP8cjpDFs7JEkBG-sr7I6dw", 
         databaseURL: "https://gamervault-ae418-default-rtdb.firebaseio.com" 
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    let currentId = "";
 
-    // MENU LOGIC
     function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
-    function showSection(section) {
-        document.getElementById('market-section').classList.add('hidden');
-        document.getElementById('sell-section').classList.add('hidden');
-        document.getElementById(section + '-section').classList.remove('hidden');
-        toggleMenu();
-    }
+    function showSection(s) { document.getElementById('market-section').classList.add('hidden'); document.getElementById('sell-section').classList.add('hidden'); document.getElementById(s+'-section').classList.remove('hidden'); toggleMenu(); }
 
-    // AI SUBMIT LOGIC
-    function aiVerifyAndSubmit() {
+    function submitAccount() {
         const title = document.getElementById('accTitle').value;
         const price = document.getElementById('accPrice').value;
+        const img = document.getElementById('accImg').value;
+        const desc = document.getElementById('accDesc').value;
         const link = document.getElementById('accContact').value;
-        if(title && price && link) {
-            db.ref('featured').push({ title, price, link });
-            alert("✅ AI VERIFIED: Listing is live!");
+        if(title && price && img) {
+            db.ref('listings').push({ title, price, img, desc, link });
+            alert("Listing Posted!");
             showSection('market');
-        } else { alert("Fill all fields!"); }
+        }
     }
 
-    // LOAD DATA
-    db.ref('featured').on('value', (s) => {
-        const list = document.getElementById('featured-list');
-        list.innerHTML = "";
-        if(s.exists()){
-            s.forEach(c => {
-                const acc = c.val();
-                list.innerHTML += `<div class='card'><h3>${acc.title}</h3><p class='price'>${acc.price}</p><a href='${acc.link}' class='btn'>CONTACT SELLER</a></div>`;
-            });
-        }
+    db.ref('listings').on('value', (s) => {
+        const grid = document.getElementById('featured-list');
+        grid.innerHTML = "";
+        s.forEach(c => {
+            const item = c.val();
+            grid.innerHTML += `
+                <div class="card" onclick="openModal('${c.key}')">
+                    <div class="card-img" style="background-image:url('${item.img}')"></div>
+                    <div class="card-info">
+                        <div style="font-weight:bold;">${item.title}</div>
+                        <div style="color:var(--gold); font-size:20px; font-weight:900;">${item.price}</div>
+                    </div>
+                </div>`;
+        });
     });
 
-    // RENDER PAYPAL
-    paypal.Buttons({
-        createOrder: (data, actions) => { return actions.order.create({ purchase_units: [{ amount: { value: '10.20' } }] }); },
-        onApprove: (data, actions) => { return actions.order.capture().then(() => { alert("Paid! Refreshing..."); location.reload(); }); }
-    }).render('#paypal-button-container');
+    function openModal(id) {
+        currentId = id;
+        db.ref('listings/' + id).once('value', (s) => {
+            const item = s.val();
+            document.getElementById('modal-body').innerHTML = `
+                <img src="${item.img}" style="width:100%; border-radius:10px;">
+                <h2>${item.title}</h2>
+                <p style="color:#aaa;">${item.desc}</p>
+                <h3 class="gold">${item.price}</h3>
+                <a href="${item.link}" target="_blank" class="btn" style="text-decoration:none; display:block; text-align:center;">CONTACT SELLER</a>
+            `;
+            loadReviews(id);
+            document.getElementById('item-modal').style.display = "block";
+        });
+    }
+
+    function closeModal() { document.getElementById('item-modal').style.display = "none"; }
+
+    function submitReview() {
+        const txt = document.getElementById('revText').value;
+        if(txt) {
+            db.ref('reviews/' + currentId).push({ text: txt, date: new Date().toLocaleDateString() });
+            document.getElementById('revText').value = "";
+            loadReviews(currentId);
+        }
+    }
+
+    function loadReviews(id) {
+        db.ref('reviews/' + id).on('value', (s) => {
+            const div = document.getElementById('review-list');
+            div.innerHTML = "";
+            s.forEach(c => { div.innerHTML += `<div style="border-bottom:1px solid #222; padding:5px 0;">⭐ ${c.val().text} <small style="color:#555;">${c.val().date}</small></div>`; });
+        });
+    }
 </script>
 </body>
 </html>
